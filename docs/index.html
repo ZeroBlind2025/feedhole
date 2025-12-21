@@ -39,10 +39,19 @@
       padding: 0 24px;
     }
     
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
     /* Nav */
     nav {
       padding: 20px 0;
       border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     
     nav .container {
@@ -404,7 +413,7 @@
 <body>
   <nav>
     <div class="container">
-      <a href="/" class="logo">
+      <a href="#" class="logo">
         <span class="logo-icon">◯</span>
         FeedHole
       </a>
