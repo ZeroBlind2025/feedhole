@@ -131,6 +131,13 @@ class FeedHoleBadge {
   handleClick(e) {
     const target = e.target;
 
+    // Close button - check first, highest priority
+    if (target.closest('.feedhole-badge-close')) {
+      e.stopPropagation();
+      this.collapse();
+      return;
+    }
+
     // Show modal when clicking filtered count
     if (target.closest('[data-action="show-modal"]')) {
       e.stopPropagation();
@@ -138,27 +145,33 @@ class FeedHoleBadge {
       return;
     }
 
-    // Close button
-    if (target.classList.contains('feedhole-badge-close')) {
-      this.collapse();
-      return;
-    }
-
     // Full settings button
-    if (target.id === 'feedhole-full-settings') {
+    if (target.closest('#feedhole-full-settings')) {
+      e.stopPropagation();
       chrome.runtime.sendMessage({ action: 'openOptions' });
       return;
     }
 
-    // Toggle checkboxes
+    // Toggle checkboxes - let the default behavior handle it
     if (target.type === 'checkbox' && target.dataset.rule) {
       this.toggleRule(target.dataset.rule, target.checked);
       return;
     }
 
-    // Clicking collapsed badge (but not the count) expands it
+    // Clicking on toggle row label (not checkbox) - do nothing, let label handle it
+    if (target.closest('.feedhole-toggle-row')) {
+      return;
+    }
+
+    // Clicking collapsed badge expands it
     if (!this.isExpanded && target.closest('.feedhole-badge-collapsed')) {
       this.expand();
+      return;
+    }
+
+    // Clicking header area (but not close button) in expanded mode - collapse
+    if (this.isExpanded && target.closest('.feedhole-badge-header')) {
+      this.collapse();
       return;
     }
   }
