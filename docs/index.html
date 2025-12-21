@@ -299,6 +299,25 @@
       gap: 24px;
     }
     
+    .screenshots-row-small {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .screenshots-row-small .screenshot img {
+      max-height: 300px;
+      object-fit: contain;
+      background: #f9f9f9;
+    }
+    
+    .screenshots-row-large {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    
     .screenshot {
       border-radius: 10px;
       overflow: hidden;
@@ -387,7 +406,8 @@
         font-size: 36px;
       }
       
-      .screenshots {
+      .screenshots-row-small,
+      .screenshots-row-large {
         grid-template-columns: 1fr;
       }
       
@@ -549,38 +569,49 @@
         <p class="section-sub">Real-time filtering with full transparency.</p>
       </div>
       
-      <div class="screenshots">
-        <div class="screenshot">
-          <img src="screenshots/badge.png" alt="FeedHole badge">
-          <div class="screenshot-caption">Floating badge shows filtered count in real-time</div>
-        </div>
+      <div class="screenshots-row-small">
         <div class="screenshot">
           <img src="screenshots/modal.png" alt="Filtered posts modal">
           <div class="screenshot-caption">Click to see exactly what was filtered and why</div>
-        </div>
-        <div class="screenshot">
-          <img src="screenshots/settings.png" alt="Settings panel">
-          <div class="screenshot-caption">Toggle rules, adjust thresholds, add custom filters</div>
         </div>
         <div class="screenshot">
           <img src="screenshots/collapsed.png" alt="Collapsed post">
           <div class="screenshot-caption">Filtered posts collapse with neutral explanations</div>
         </div>
       </div>
+      
+      <div class="screenshots-row-large">
+        <div class="screenshot">
+          <img src="screenshots/badge.png" alt="FeedHole badge">
+          <div class="screenshot-caption">Floating badge shows filtered count in real-time</div>
+        </div>
+        <div class="screenshot">
+          <img src="screenshots/settings.png" alt="Settings panel">
+          <div class="screenshot-caption">Toggle rules, adjust thresholds, add custom filters</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="philosophy">
+    <div class="container">
+      <h2>The philosophy</h2>
+      <p class="philosophy-text">
+        FeedHole doesn't judge content. It applies pattern matching based on rules you configure. 
+        It's not "this content is bad" — it's "this matched your preferences."
+        Neutral. Clinical. Your feed, your filters.
+      </p>
     </div>
   </section>
   
   <footer>
     <div class="container">
-      <p class="philosophy-text" style="max-width: 700px; margin: 0 auto 24px; text-align: center; color: var(--text-muted); font-size: 15px; line-height: 1.6;">
-        <strong>Our Philosophy:</strong> FeedHole doesn't judge content. It applies pattern matching based on rules you configure. It's not "this content is bad" — it's "this matched your preferences." Neutral. Clinical. Your feed, your filters.
-      </p>
       <div class="footer-links">
         <a href="https://github.com/ZeroBlind2025/feedhole" target="_blank">GitHub</a>
         <a href="https://github.com/ZeroBlind2025/feedhole/issues" target="_blank">Report Issue</a>
         <a href="https://github.com/ZeroBlind2025/feedhole/blob/main/LICENSE" target="_blank">MIT License</a>
       </div>
-      <p class="footer-copy">FeedHole — Open source feed filtering by <a href="https://harwoodlabs.xyz" target="_blank" style="color: inherit; text-decoration: underline;">HarwoodLabs</a></p>
+      <p class="footer-copy">FeedHole — Open source feed filtering</p>
     </div>
   </footer>
 </body>
