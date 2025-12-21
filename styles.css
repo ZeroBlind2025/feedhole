@@ -3,6 +3,11 @@
  * Aesthetic: Minimal, clinical, slightly amused
  */
 
+/* Hidden sidebar ads */
+.feedhole-hidden-ad {
+  display: none !important;
+}
+
 /* Collapsed post placeholder */
 .feedhole-placeholder {
   background: #f9fafb;
