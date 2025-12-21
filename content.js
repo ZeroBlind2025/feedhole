@@ -15,9 +15,26 @@
   // State
   let userRules = { ...DEFAULT_RULES };
   let processedPosts = new Set();
-  let stats = { filtered: 0, processed: 0 };
+  let stats = {
+    filtered: 0,
+    processed: 0,
+    byType: {
+      promoted: 0,
+      repost: 0,
+      mutedAuthor: 0,
+      hashtags: 0,
+      emojis: 0,
+      engagementBait: 0,
+      originStory: 0,
+      rageHook: 0,
+      newsletter: 0,
+      blockedPhrase: 0
+    },
+    recentFiltered: [] // Last 50 filtered posts for history
+  };
   let observer = null;
   let isEnabled = true;
+  let badge = null;
   
   // LinkedIn selectors (will need maintenance as LinkedIn updates)
   const SELECTORS = {
@@ -45,6 +62,12 @@
       }
       // Default to enabled if not set
       isEnabled = stored.feedholeEnabled !== false;
+
+      // Load persisted stats
+      const { feedholeStats } = await chrome.storage.local.get('feedholeStats');
+      if (feedholeStats) {
+        stats = { ...stats, ...feedholeStats };
+      }
     } catch (e) {
       console.log('[FeedHole] Using default rules');
     }
@@ -52,6 +75,11 @@
     // Only start if enabled
     if (isEnabled) {
       waitForFeed();
+      // Initialize floating badge
+      if (window.FeedHoleBadge) {
+        badge = new window.FeedHoleBadge();
+        badge.updateStats(stats.filtered, stats.processed);
+      }
     } else {
       console.log('[FeedHole] Disabled by user');
     }
@@ -175,6 +203,39 @@
       if (result.shouldHide) {
         collapsePost(postElement, result.reasons);
         stats.filtered++;
+
+        // Track by type
+        for (const reason of result.reasons) {
+          if (reason.includes('Promoted')) stats.byType.promoted++;
+          else if (reason.includes('Repost')) stats.byType.repost++;
+          else if (reason.includes('Author')) stats.byType.mutedAuthor++;
+          else if (reason.includes('Hashtag')) stats.byType.hashtags++;
+          else if (reason.includes('Emoji')) stats.byType.emojis++;
+          else if (reason.includes('engagement')) stats.byType.engagementBait++;
+          else if (reason.includes('origin story')) stats.byType.originStory++;
+          else if (reason.includes('hook pattern')) stats.byType.rageHook++;
+          else if (reason.includes('newsletter')) stats.byType.newsletter++;
+          else if (reason.includes('blocked phrase')) stats.byType.blockedPhrase++;
+        }
+
+        // Add to recent history (keep last 50)
+        stats.recentFiltered.unshift({
+          author: postData.author,
+          preview: postData.text.substring(0, 100),
+          reasons: result.reasons,
+          timestamp: Date.now()
+        });
+        if (stats.recentFiltered.length > 50) {
+          stats.recentFiltered.pop();
+        }
+
+        // Persist stats to storage
+        chrome.storage.local.set({ feedholeStats: stats });
+
+        // Update badge
+        if (badge) {
+          badge.updateStats(stats.filtered, stats.processed);
+        }
       }
       
     } catch (e) {

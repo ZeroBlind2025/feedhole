@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const enabledToggle = document.getElementById('enabled-toggle');
   const settingsLink = document.getElementById('settings-link');
+  const dashboardLink = document.getElementById('dashboard-link');
   const filteredCount = document.getElementById('filtered-count');
   const processedCount = document.getElementById('processed-count');
 
@@ -31,6 +32,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   settingsLink.addEventListener('click', (e) => {
     e.preventDefault();
     chrome.runtime.openOptionsPage();
+  });
+
+  // Dashboard link
+  dashboardLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html') });
   });
 
   // Get stats from active LinkedIn tab

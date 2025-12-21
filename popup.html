@@ -132,21 +132,36 @@
       transform: translateX(18px);
     }
     
-    .settings-link {
+    .links {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .link {
       display: block;
       text-align: center;
       padding: 10px;
-      margin-top: 12px;
       font-size: 12px;
       color: #6b7280;
       text-decoration: none;
       border-radius: 6px;
       transition: all 0.15s;
     }
-    
-    .settings-link:hover {
+
+    .link:hover {
       background: #f3f4f6;
       color: #374151;
+    }
+
+    .link.primary {
+      background: #111;
+      color: #fff;
+    }
+
+    .link.primary:hover {
+      background: #333;
     }
   </style>
 </head>
@@ -178,7 +193,10 @@
     </label>
   </div>
   
-  <a href="options.html" class="settings-link" id="settings-link">Configure filter rules →</a>
+  <div class="links">
+    <a href="dashboard.html" class="link primary" id="dashboard-link">View Dashboard</a>
+    <a href="options.html" class="link" id="settings-link">Configure filter rules</a>
+  </div>
   
   <script src="popup.js"></script>
 </body>
