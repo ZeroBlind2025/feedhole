@@ -40,12 +40,17 @@
   const SELECTORS = {
     feedContainer: '.scaffold-finite-scroll__content',
     feedPost: '[data-urn^="urn:li:activity"]',
-    postText: '.feed-shared-update-v2__description',
-    postTextAlt: '.update-components-text',
-    authorName: '.update-components-actor__name',
-    promotedLabel: '.update-components-actor__description',
-    repostIndicator: '.update-components-header__text-view',
-    seeMore: '.feed-shared-inline-show-more-text__see-more-less-toggle'
+    // Multiple text selectors for different post types
+    postText: [
+      '.feed-shared-update-v2__description',
+      '.update-components-text',
+      '.feed-shared-text',
+      '.feed-shared-inline-show-more-text',
+      '[data-test-id="main-feed-activity-card__commentary"]'
+    ],
+    authorName: '.update-components-actor__name, .feed-shared-actor__name',
+    promotedLabel: '.update-components-actor__description, .feed-shared-actor__description',
+    repostIndicator: '.update-components-header__text-view, .feed-shared-header'
   };
   
   /**
@@ -75,13 +80,25 @@
     // Only start if enabled
     if (isEnabled) {
       waitForFeed();
-      // Initialize floating badge
-      if (window.FeedHoleBadge) {
-        badge = new window.FeedHoleBadge();
-        badge.updateStats(stats.filtered, stats.processed);
-      }
+      // Initialize floating badge (with retry for race condition)
+      initBadge();
     } else {
       console.log('[FeedHole] Disabled by user');
+    }
+  }
+
+  /**
+   * Initialize badge with retry
+   */
+  function initBadge(attempts = 0) {
+    if (window.FeedHoleBadge) {
+      badge = new window.FeedHoleBadge();
+      badge.updateStats(stats.filtered, stats.processed);
+      console.log('[FeedHole] Badge initialized');
+    } else if (attempts < 10) {
+      setTimeout(() => initBadge(attempts + 1), 100);
+    } else {
+      console.log('[FeedHole] Badge class not available');
     }
   }
   
@@ -145,10 +162,15 @@
       // Get post URN for deduplication
       const urn = postElement.getAttribute('data-urn') || '';
       
-      // Get post text
-      let textElement = postElement.querySelector(SELECTORS.postText) 
-                     || postElement.querySelector(SELECTORS.postTextAlt);
-      let text = textElement?.innerText || '';
+      // Get post text (try multiple selectors)
+      let text = '';
+      for (const selector of SELECTORS.postText) {
+        const textElement = postElement.querySelector(selector);
+        if (textElement?.innerText) {
+          text = textElement.innerText;
+          break;
+        }
+      }
       
       // Get author
       const authorElement = postElement.querySelector(SELECTORS.authorName);
