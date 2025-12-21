@@ -148,15 +148,8 @@ class FeedHoleBadge {
     // Full settings button
     if (target.closest('#feedhole-full-settings')) {
       e.stopPropagation();
-      try {
-        chrome.runtime.sendMessage({ action: 'openOptions' });
-      } catch (err) {
-        console.log('[FeedHole] Error opening options:', err);
-      }
-      // Also open directly as backup (more reliable)
-      setTimeout(() => {
-        window.open(chrome.runtime.getURL('options.html'), '_blank');
-      }, 100);
+      // Send message to background script to open options
+      chrome.runtime.sendMessage({ action: 'openOptionsTab' });
       return;
     }
 
