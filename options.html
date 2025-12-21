@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>FeedHole Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      color: #111;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: #111;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    
+    .rule-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .rule-row:last-child {
+      border-bottom: none;
+    }
+    
+    .rule-info {
+      flex: 1;
+    }
+    
+    .rule-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #111;
+    }
+    
+    .rule-desc {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #d1d5db;
+      transition: 0.2s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    input:checked + .slider {
+      background-color: #111;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    
+    /* Number input */
+    .number-input {
+      width: 60px;
+      padding: 6px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .number-input:focus {
+      outline: none;
+      border-color: #111;
+    }
+    
+    /* Textarea for lists */
+    .list-input {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      margin-top: 8px;
+    }
+    
+    .list-input:focus {
+      outline: none;
+      border-color: #111;
+    }
+    
+    .list-hint {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+    
+    /* Save button */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: all 0.2s;
+    }
+    
+    .save-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .btn-primary {
+      background: #111;
+      color: #fff;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      background: #333;
+    }
+    
+    .btn-secondary {
+      background: #fff;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    
+    .btn-secondary:hover {
+      background: #f9fafb;
+    }
+    
+    .saved-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .saved-toast.visible {
+      opacity: 1;
+    }
+    
+    /* Footer space for save bar */
+    .footer-space {
+      height: 80px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">◯</div>
+      <h1>FeedHole Settings</h1>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Content Filters</div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Promoted content</div>
+          <div class="rule-desc">Filter posts marked as sponsored or promoted</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-rule="hidePromoted" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Reposts without commentary</div>
+          <div class="rule-desc">Filter reshared content with no added context</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-rule="hideReposts" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Newsletter pitches</div>
+          <div class="rule-desc">Filter "link in bio", "DM me", lead magnet patterns</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-rule="hideNewsletterPitches" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Engagement bait</div>
+          <div class="rule-desc">Filter posts ending in "Agree?", "Thoughts?", etc.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-rule="hideEngagementBait" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Origin story hooks</div>
+          <div class="rule-desc">Filter "I was fired...", "I went from X to Y" patterns</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-rule="hideHumbleBrags" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Rage hooks</div>
+          <div class="rule-desc">Filter "Unpopular opinion", "Stop doing X" patterns</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-rule="hideRageHooks" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Thresholds</div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Maximum hashtags</div>
+          <div class="rule-desc">Filter posts exceeding this hashtag count</div>
+        </div>
+        <input type="number" class="number-input" data-rule="maxHashtags" value="5" min="1" max="50">
+      </div>
+      
+      <div class="rule-row">
+        <div class="rule-info">
+          <div class="rule-name">Maximum emojis</div>
+          <div class="rule-desc">Filter posts exceeding this emoji count</div>
+        </div>
+        <input type="number" class="number-input" data-rule="maxEmojis" value="8" min="1" max="100">
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Custom Filters</div>
+      
+      <div class="rule-info">
+        <div class="rule-name">Blocked phrases</div>
+        <div class="rule-desc">Filter posts containing any of these phrases</div>
+      </div>
+      <textarea class="list-input" data-rule="blockedPhrases" placeholder="Enter phrases, one per line..."></textarea>
+      <div class="list-hint">One phrase per line. Case-insensitive matching.</div>
+      
+      <div class="rule-info" style="margin-top: 20px;">
+        <div class="rule-name">Muted authors</div>
+        <div class="rule-desc">Filter posts from authors matching these names</div>
+      </div>
+      <textarea class="list-input" data-rule="mutedAuthors" placeholder="Enter author names, one per line..."></textarea>
+      <div class="list-hint">Partial matching. "John" will match "John Smith".</div>
+    </div>
+    
+    <div class="footer-space"></div>
+  </div>
+  
+  <div class="save-bar" id="save-bar">
+    <button class="btn btn-secondary" id="reset-btn">Reset to defaults</button>
+    <button class="btn btn-primary" id="save-btn">Save changes</button>
+  </div>
+  
+  <div class="saved-toast" id="saved-toast">Settings saved</div>
+  
+  <script src="options.js"></script>
+</body>
+</html>

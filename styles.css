@@ -1,0 +1,107 @@
+/**
+ * FeedHole Styles
+ * Aesthetic: Minimal, clinical, slightly amused
+ */
+
+/* Collapsed post placeholder */
+.feedhole-placeholder {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 8px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.feedhole-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feedhole-icon {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.feedhole-text {
+  flex: 1;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.feedhole-reveal {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.feedhole-reveal:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+/* Revealed post indicator */
+.feedhole-revealed {
+  position: relative;
+}
+
+.feedhole-revealed::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #e5e7eb;
+  border-radius: 3px 0 0 3px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .feedhole-placeholder {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .feedhole-text {
+    color: #9ca3af;
+  }
+  
+  .feedhole-reveal {
+    border-color: #4b5563;
+    color: #9ca3af;
+  }
+  
+  .feedhole-reveal:hover {
+    background: #374151;
+    border-color: #6b7280;
+    color: #d1d5db;
+  }
+  
+  .feedhole-revealed::before {
+    background: #374151;
+  }
+}
+
+/* Animation for collapse */
+.feedhole-placeholder {
+  animation: feedhole-fade-in 0.2s ease;
+}
+
+@keyframes feedhole-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
