@@ -60,10 +60,11 @@ class FeedHoleBadge {
   }
   
   renderCollapsed() {
+    const pct = this.stats.processed > 0 ? Math.round((this.stats.filtered / this.stats.processed) * 100) : 0;
     return `
       <div class="feedhole-badge-collapsed">
         <span class="feedhole-badge-icon">◯</span>
-        <span class="feedhole-badge-count" data-action="show-modal">${this.stats.filtered}</span>
+        <span class="feedhole-badge-count" data-action="show-modal">${this.stats.filtered} - ${pct}% filtered</span>
       </div>
     `;
   }
@@ -231,7 +232,8 @@ class FeedHoleBadge {
     } else {
       const count = this.element.querySelector('.feedhole-badge-count');
       if (count) {
-        count.textContent = filtered;
+        const pct = processed > 0 ? Math.round((filtered / processed) * 100) : 0;
+        count.textContent = `${filtered} - ${pct}% filtered`;
         // Pulse animation on update
         count.classList.remove('pulse');
         void count.offsetWidth; // Trigger reflow
