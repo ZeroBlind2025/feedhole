@@ -21,18 +21,42 @@ class FeedHoleBadge {
     this.element.id = 'feedhole-badge';
     this.element.innerHTML = this.renderCollapsed();
     document.body.appendChild(this.element);
-    
+
     // Attach styles
     this.injectStyles();
-    
+
     // Event listeners
     this.element.addEventListener('click', (e) => this.handleClick(e));
-    
+
     // Make draggable
     this.makeDraggable();
-    
+
     // Load position from storage
     this.loadPosition();
+
+    // Protect badge from LinkedIn's DOM manipulation
+    this.protectBadge();
+  }
+
+  protectBadge() {
+    // Watch for badge removal and re-add it
+    const observer = new MutationObserver((mutations) => {
+      // Check if badge was removed
+      if (!document.getElementById('feedhole-badge')) {
+        console.log('[FeedHole] Badge was removed, re-adding...');
+        document.body.appendChild(this.element);
+      }
+      // Check if styles were removed
+      if (!document.getElementById('feedhole-badge-styles')) {
+        console.log('[FeedHole] Styles were removed, re-injecting...');
+        this.injectStyles();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: false
+    });
   }
   
   renderCollapsed() {
@@ -404,14 +428,20 @@ class FeedHoleBadge {
   
   injectStyles() {
     const style = document.createElement('style');
+    style.id = 'feedhole-badge-styles';
     style.textContent = `
       #feedhole-badge {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 9999;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        user-select: none;
+        position: fixed !important;
+        bottom: 100px !important;
+        left: 20px !important;
+        right: auto !important;
+        z-index: 9999999 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        user-select: none !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
       
       /* Collapsed state */
