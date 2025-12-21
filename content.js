@@ -48,7 +48,16 @@
       '.feed-shared-inline-show-more-text',
       '[data-test-id="main-feed-activity-card__commentary"]'
     ],
-    authorName: '.update-components-actor__name, .feed-shared-actor__name',
+    // Multiple author selectors for different post types
+    authorName: [
+      '.update-components-actor__name span[aria-hidden="true"]',
+      '.update-components-actor__name',
+      '.feed-shared-actor__name span[aria-hidden="true"]',
+      '.feed-shared-actor__name',
+      '.update-components-actor__title',
+      '[data-control-name="actor"] span[aria-hidden="true"]',
+      '.feed-shared-actor__title'
+    ],
     promotedLabel: '.update-components-actor__description, .feed-shared-actor__description',
     repostIndicator: '.update-components-header__text-view, .feed-shared-header'
   };
@@ -172,9 +181,15 @@
         }
       }
       
-      // Get author
-      const authorElement = postElement.querySelector(SELECTORS.authorName);
-      const author = authorElement?.innerText || '';
+      // Get author (try multiple selectors)
+      let author = '';
+      for (const selector of SELECTORS.authorName) {
+        const authorElement = postElement.querySelector(selector);
+        if (authorElement?.innerText?.trim()) {
+          author = authorElement.innerText.trim();
+          break;
+        }
+      }
       
       // Check if promoted
       const promotedElement = postElement.querySelector(SELECTORS.promotedLabel);
